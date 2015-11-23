@@ -21,7 +21,9 @@ from . import views
 urlpatterns = [
     url(r'^add_user/', views.add_user),
     url(r'^reg_question/', views.add_question),
-    url(r'^fast_question/', views.add_fast), 
+    url(r'^fast_question/', views.add_fast),
+    url(r'^get_question/', views.get_question), 
+    url(r'^get_fast/', views.get_fast), 
     url(r'^/', views.index),
     url(r'^admin/', include(admin.site.urls)),
 ]

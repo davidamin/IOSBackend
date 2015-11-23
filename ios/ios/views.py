@@ -3,6 +3,7 @@ from ios import models
 from django.core import serializers
 import json
 from django.contrib.auth.hashers import make_password, check_password
+from random import randint
 
 def model_to_json(model):
 	data = serializers.serialize('json',[model,])
@@ -73,5 +74,29 @@ def add_fast(request):
 		answer.points = ans['score']
 		answer.save()
 	return JsonResponse({'ok':True, 'log': 'Made question'})
+
+def get_question(request):
+	count = models.Question.objects.filter(is_fast=False).count()
+	index = randint(0,count-1)
+	rand_question = models.Question.objects.filter(is_fast=False)[index]
+	answers = models.Answers.objects.filter(question=rand_question)
+	ret_list = [{'answer': a.text, 'score': str(a.points)} for a in answers]
+	return JsonResponse({'ok':True,'question':rand_question.text, 'answers':ret_list})
+
+def get_fast(request):
+	used_list = []
+	quest_list = []
+	for i in range(0,5):
+		count = models.Question.objects.filter(is_fast=True).count()
+		index = randint(0,count-1)
+		while index in used_list:
+			index = randint(0,count-1)
+		used_list.append(index)
+		rand_question = models.Question.objects.filter(is_fast=True)[index]
+		answers = models.Answers.objects.filter(question=rand_question)
+		ret_list = [{'answer': a.text, 'score': str(a.points)} for a in answers]
+		quest_list.append({'question': rand_question.text, 'answers':ret_list})
+	return JsonResponse({'ok':True,'list':quest_list})
+
 
 
