@@ -84,19 +84,44 @@ def get_question(request):
 	return JsonResponse({'ok':True,'question':rand_question.text, 'answers':ret_list})
 
 def get_fast(request):
-	used_list = []
-	quest_list = []
-	for i in range(0,5):
-		count = models.Question.objects.filter(is_fast=True).count()
-		index = randint(0,count-1)
-		while index in used_list:
-			index = randint(0,count-1)
-		used_list.append(index)
-		rand_question = models.Question.objects.filter(is_fast=True)[index]
-		answers = models.Answers.objects.filter(question=rand_question)
-		ret_list = [{'answer': a.text, 'score': str(a.points)} for a in answers]
-		quest_list.append({'question': rand_question.text, 'answers':ret_list})
-	return JsonResponse({'ok':True,'list':quest_list})
+	count = models.Question.objects.filter(is_fast=True).count()
+	index = randint(0,count-1)
+	rand_question = models.Question.objects.filter(is_fast=True)[index]
+	answers = models.Answers.objects.filter(question=rand_question)
+	ret_list = [{'answer': a.text, 'score': str(a.points)} for a in answers]
+	return JsonResponse({'ok':True,'question':rand_question.text, 'answers':ret_list})
 
+def add_score(request):
+	if request.method != 'POST':
+		return JsonResponse({'ok': False, 'error':'Must use POST'})
+	#just take a score, and a user, check if it's higher
+	try:
+		user = models.Profile.objects.get(username=request.POST['username'])
+		score = request.POST['questions'] + request.POST['fast']
+		user.games_played += 1
+		user.lifetime_score += score
+		if score > user.high_score:
+			user.high_score = score
+		if request.POST['questions'] > user.best_questions:
+			user.best_questions = request.POST['questions']
+		if request.POST['fast'] > user.best_fast:
+			user.best_fast = request.POST['fast']
+		user.save()
+	except:
+		return JsonResponse({'ok': 'False', 'error': 'User not found'})
+	return JsonResponse({'ok': True,'log': 'Scores Updated'})
 
+def get_user_data(request):
+	if request.method != 'POST':
+		return JsonResponse({'ok': False, 'error':'Must use POST'})
+	try:
+		user = models.Profile.objects.get(username=request.POST['username'])
+		return JsonResponse({'ok': True, 'played': user.games_played, 'high': user.high_score, 'best_questions': user.best_questions, 'best_fast': user.best_fast, 'lifetime': user.lifetime_score})
+	except:
+		return JsonResponse({'ok': False, 'error': 'User not found'})
+
+def get_high_scores(request):
+	profiles = models.Profile.objects.all()
+	score_list = [p.high_score for p in profiles]
+	return JsonResponse({'ok': True, 'scores':score_list})
 
