@@ -1,7 +1,7 @@
 from django.db import models
 
 class Profile(models.Model):
-	username = models.CharField(max_length=250)
+	username = models.CharField(max_length=250, unique = True)
 	password = models.CharField(max_length=256)
 	games_played = models.IntegerField()
 	lifetime_score = models.IntegerField()
@@ -15,5 +15,6 @@ class Question(models.Model):
 	is_fast = models.BooleanField(default=False)
 	
 class Answers(models.Model):
+	question = models.ForeignKey(Question)
 	text = models.CharField(max_length=250)
 	points = models.IntegerField()

@@ -19,6 +19,9 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    url(r'^', views.index),
+    url(r'^add_user/', views.add_user),
+    url(r'^reg_question/', views.add_question),
+    url(r'^fast_question/', views.add_fast), 
+    url(r'^/', views.index),
     url(r'^admin/', include(admin.site.urls)),
 ]
