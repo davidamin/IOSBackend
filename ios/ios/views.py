@@ -124,6 +124,6 @@ def get_user_data(request):
 
 def get_high_scores(request):
 	profiles = models.Profile.objects.all()
-	score_list = [{'score':p.high_score, 'name': p.username} for p in profiles]
+	score_list = [{'score':p.lifetime_score, 'name': p.username} for p in profiles]
 	return JsonResponse({'ok': True, 'scores':score_list})
 
