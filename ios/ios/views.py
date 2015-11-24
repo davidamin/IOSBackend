@@ -24,7 +24,7 @@ def add_user(request):
 		new_user.games_played = 0
 		new_user.lifetime_score = 0
 		new_user.high_score = 0
-		new_user.best_game = 0
+		new_user.perfect_boards = 0
 		new_user.best_questions = 0
 		new_user.best_fast = 0
 		new_user.save()
@@ -97,18 +97,20 @@ def add_score(request):
 	#just take a score, and a user, check if it's higher
 	try:
 		user = models.Profile.objects.get(username=request.POST['username'])
-		score = request.POST['questions'] + request.POST['fast']
-		user.games_played += 1
-		user.lifetime_score += score
-		if score > user.high_score:
-			user.high_score = score
-		if request.POST['questions'] > user.best_questions:
-			user.best_questions = request.POST['questions']
-		if request.POST['fast'] > user.best_fast:
-			user.best_fast = request.POST['fast']
-		user.save()
 	except:
-		return JsonResponse({'ok': 'False', 'error': 'User not found'})
+		return JsonResponse({'ok':False, 'error': 'User not found'})
+	score = int(request.POST['questions']) + int(request.POST['fast'])
+	user.games_played += 1
+	user.lifetime_score += score
+	if score > user.high_score:
+		user.high_score = score
+	if int(request.POST['questions']) > user.best_questions:
+		user.best_questions = int(request.POST['questions'])
+	if int(request.POST['fast']) > user.best_fast:
+		user.best_fast = int(request.POST['fast'])
+	if 'perfect_boards' in request.POST:
+		user.perfect_boards += int(request.POST['perfect_boards'])
+	user.save()
 	return JsonResponse({'ok': True,'log': 'Scores Updated'})
 
 def get_user_data(request):
@@ -116,12 +118,12 @@ def get_user_data(request):
 		return JsonResponse({'ok': False, 'error':'Must use POST'})
 	try:
 		user = models.Profile.objects.get(username=request.POST['username'])
-		return JsonResponse({'ok': True, 'played': user.games_played, 'high': user.high_score, 'best_questions': user.best_questions, 'best_fast': user.best_fast, 'lifetime': user.lifetime_score})
+		return JsonResponse({'ok': True, 'played': user.games_played, 'high': user.high_score, 'best_questions': user.best_questions, 'best_fast': user.best_fast, 'lifetime': user.lifetime_score, 'perfect_boards':user.perfect_boards})
 	except:
 		return JsonResponse({'ok': False, 'error': 'User not found'})
 
 def get_high_scores(request):
 	profiles = models.Profile.objects.all()
-	score_list = [p.high_score for p in profiles]
+	score_list = [{'score':p.high_score, 'name': p.username} for p in profiles]
 	return JsonResponse({'ok': True, 'scores':score_list})
 

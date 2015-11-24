@@ -6,7 +6,7 @@ class Profile(models.Model):
 	games_played = models.IntegerField()
 	lifetime_score = models.IntegerField()
 	high_score = models.IntegerField()
-	best_game = models.IntegerField()
+	perfect_boards = models.IntegerField()
 	best_questions = models.IntegerField()
 	best_fast = models.IntegerField()
 
