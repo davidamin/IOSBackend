@@ -178,7 +178,7 @@ def send_email(request):
 	try:
 		this_user = models.Profile.objects.get(username=request.POST['username'])
 		if this_user.email == request.POST['email']:
-			temp_pass = ''.join(random.choice('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') for i in range(16))
+			temp_pass = ''.join(random.choice('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') for i in range(8))
 			this_user.password = make_password(temp_pass)
 			this_user.save()
 			send_mail("Here's Your Temporary Password", "Your temporary password: " + temp_pass,"webandmobilefamilyfeud@gmail.com",[this_user.email], fail_silently=False)
