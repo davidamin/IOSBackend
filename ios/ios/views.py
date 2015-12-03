@@ -191,6 +191,9 @@ def send_email(request):
 	except:
 			return JsonResponse({'ok':False, 'error': 'Failed to find user'})	
 
+def privacy(request):
+	return render_to_response('privacy.html',{},context_instance=RequestContext(request))
+
 def delete(request):
 	return render_to_response('delete.html',{},context_instance=RequestContext(request))
 

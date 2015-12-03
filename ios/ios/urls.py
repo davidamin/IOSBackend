@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^add_score/', views.add_score),
     url(r'^get_user_data/', views.get_user_data), 
     url(r'^get_high_scores/', views.get_high_scores),
+    url(r'^privacy/', views.privacy),
     url(r'^delete/', views.delete),
     url(r'^delete_user/',views.delete_user), 
     url(r'^/', views.index),
