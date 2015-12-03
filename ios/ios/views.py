@@ -1,5 +1,8 @@
 from django.http import HttpResponse, JsonResponse
 from ios import models
+from django.shortcuts import render, render_to_response
+from django.template import Context, RequestContext, loader
+from django.template.loader import get_template
 from django.core import serializers
 import json
 from django.contrib.auth.hashers import make_password, check_password
@@ -187,4 +190,19 @@ def send_email(request):
 			return JsonResponse({'ok':False, 'error': 'Email Invalid'})
 	except:
 			return JsonResponse({'ok':False, 'error': 'Failed to find user'})	
+
+def delete(request):
+	return render_to_response('delete.html',{},context_instance=RequestContext(request))
+
+def delete_user(request):
+	try:
+		this_user = models.Profile.objects.get(username=request.POST['username'])
+		if check_password(request.POST['password'], this_user.password):
+			this_user.delete()
+			return HttpResponse('User Deleted!')
+		else:
+			return HttpResponse('Incorrect Username or Password')
+	except:
+			return HttpResponse('Error, user not deleted')	
+
 

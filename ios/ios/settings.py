@@ -68,6 +68,8 @@ TEMPLATES = [
     },
 ]
 
+TEMPLATES_DIRS= (os.path.join(BASE_DIR,'ios/templates'))
+
 WSGI_APPLICATION = 'ios.wsgi.application'
 
 
