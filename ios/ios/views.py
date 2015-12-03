@@ -34,7 +34,7 @@ def register_user(request):
 		return JsonResponse({'ok': True, 'user': 'Created new user ' + new_user.username})
 
 	except Exception as e:
-		return JsonResponse({'ok': False, 'error': 'Registration Failed'})
+		return JsonResponse({'ok': False, 'error': 'User Already Exists'})
 
 
 
